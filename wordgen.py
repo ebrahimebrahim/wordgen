@@ -52,6 +52,7 @@ class Language(object):
   def __init__(self):
     self.sounds = []
     self.onset_constraints = [no_doubles]
+    self.nucleus_constraints = []
     self.coda_constraints = [no_doubles]
     self.syllable_constraints = []
     self.word_constraints = []
@@ -72,6 +73,7 @@ english.import_sound_list("english_sounds.csv")
 english.onset_length_distr = [0.3,0.6,0.9]
 english.coda_length_distr = [0.8/3,2*0.8/3,0.8,0.95]
 english.onset_constraints += [english_constraints.onset_constraint]
+english.nucleus_constraints += [english_constraints.nucleus_constraint]
 english.coda_constraints += [english_constraints.coda_constraint]
 
 
@@ -84,7 +86,10 @@ def gen_onset(language):
   return onset
 
 def gen_nucleus(language):
-  return [random.choice([sound for sound in language.sounds if sound.is_nucleus])]
+  nucleus = None
+  while nucleus is None or not all(constraint_holds(nucleus) for constraint_holds in language.nucleus_constraints):
+    nucleus = [random.choice([sound for sound in language.sounds if sound.is_nucleus])]
+  return nucleus
 
 def gen_coda(language):
   coda = None
