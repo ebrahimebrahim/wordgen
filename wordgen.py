@@ -119,7 +119,9 @@ display_word = lambda word,style : ''.join(display_syllable(syllable,style) for 
 
 
 def main():
-  word = gen_word(2,english)
+  r = random.random()
+  num_syllables = len([x for x in [0.5,0.9,0.97,0.995] if r > x]) + 1
+  word = gen_word(num_syllables,english)
   print display_word(word,"English")
   print display_word(word,"IPA")
 

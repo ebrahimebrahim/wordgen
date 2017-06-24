@@ -5,7 +5,7 @@ TH_V = '\xc3\xb0'
 NG = '\xc5\x8b'
 SH = '\xca\x83'
 CH = 't'+SH
-TH_UV = '\xce\xb8'
+TH_U = '\xce\xb8'
 SJ = '\xca\x92'
 
 def onset_constraint(onset):
@@ -14,8 +14,8 @@ def onset_constraint(onset):
   if len(onset)>1 and ('h' in ipa or any(sound.is_affricate for sound in onset)): return False
   for i in range(len(onset)-1):
     c1 = onset[i]
-    if not c1.is_obstruent: return False
     c2 = onset[i+1]
+    if not c1.is_obstruent: return False
     if c1.display_IPA == 's':
       if not (c2.is_nasal or c2.is_liquid or c2.is_glide or (c2.is_obstruent and not c2.is_voiced and not c2.display_IPA==SH)): return False
     else:
@@ -24,9 +24,31 @@ def onset_constraint(onset):
   
 
 def nucleus_constraint(nucleus):
+  if not all(sound.is_vowel for sound in nucleus): return False
   return True
 
+
+CODA_TABLE = [ (['p','f'],[TH_U,'s','t']),
+               ([TH_U,'k'],['s','t']),
+               (['t'],['s']),
+               ([CH,SH],['t']),
+               (['s'],['t','k','p']),
+               ([NG],['k','d','z','g']),
+               (['m'],['p','d','z','b']),
+               (['z',SJ,DJ],['d']),
+               (['b','g','v',TH_V],['d','z']),
+               (['d'],['z']),
+               (['l'],[TH_U,'s','t','k','p',CH,DJ,'d','z',SH,'f','v','m','n']),
+               (['r'],[TH_U,'s','t','k','p',CH,DJ,'d','z',SH,'f','v','m','n','l']),
+               (['n'],[TH_U,'s','t',CH,DJ,'d','z']),
+               (['z',SJ,'v',TH_V,'l','r'],['g','b']) ]
 
 def coda_constraint(coda):
+  if 'hw' in [sound.display_IPA for sound in coda]: return False
+  if 'h' in [sound.display_IPA for sound in coda]: return False
+  if any(sound.is_glide for sound in coda): return False
+  for i in range(len(coda)-1):
+    c1 = coda[i]
+    c2 = coda[i+1]
+    if not any((c1.display_IPA in first_group and c2.display_IPA in second_group) for first_group,second_group in CODA_TABLE): return False
   return True
-
