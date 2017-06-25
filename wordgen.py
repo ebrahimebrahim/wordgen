@@ -108,4 +108,3 @@ def gen_word(num_syllables,language):
 display_subsyllable = lambda subsyllable,style : ''.join([sound.display(style) for sound in subsyllable])
 display_syllable = lambda syllable,style : ''.join([display_subsyllable(subsyllable,style) for subsyllable in syllable])
 display_word = lambda word,style : '-'.join(display_syllable(syllable,style) for syllable in word)
-

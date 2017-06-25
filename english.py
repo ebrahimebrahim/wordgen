@@ -41,10 +41,9 @@ CODA_TABLE = [ (['p','f'],[TH_U,'s','t']),
                (['z',SJ,DJ],['d']),
                (['b','g','v',TH_V],['d','z']),
                (['d'],['z']),
-               (['l'],[TH_U,'s','t','k','p',CH,DJ,'d','z',SH,'f','v','m','n']),
-               (['r'],[TH_U,'s','t','k','p',CH,DJ,'d','z',SH,'f','v','m','n','l']),
-               (['n'],[TH_U,'s','t',CH,DJ,'d','z']),
-               (['z',SJ,'v',TH_V,'l','r'],['g','b']) ]
+               (['l'],[TH_U,'s','t','k','p',CH,DJ,'d','z',SH,'f','v','m','n','b']),
+               (['r'],[TH_U,'s','t','k','p',CH,DJ,'d','z',SH,'f','v','m','n','l','g','b']),
+               (['n'],[TH_U,'s','t',CH,DJ,'d','z']) ]
 
 def coda_constraint(coda):
   if 'hw' in [sound.display_IPA for sound in coda]: return False
@@ -56,13 +55,19 @@ def coda_constraint(coda):
     if not any((c1.display_IPA in first_group and c2.display_IPA in second_group) for first_group,second_group in CODA_TABLE): return False
   return True
 
+def no_eib(word):
+  for i in range(len(word)-1):
+    s1 = word[i]
+    s2 = word[i+1]
+    if not s1[2] and not s2[0]: return False
+  return True
+
 
 english = Language()
 english.import_sound_list("english_sounds.csv")
-english.onset_length_distr = [0.4,0.8,0.95]
-#english.onset_length_distr = [0.3,0.6,0.9]
-english.coda_length_distr = [0.5,0.75,0.93,0.9851]
-#english.coda_length_distr = [0.8/3,2*0.8/3,0.8,0.95]
+english.onset_length_distr = [1.0/2,3.0/4,7.0/8]
+english.coda_length_distr = [1.0/2,3.0/4,7.0/8,15.0/16]
 english.onset_constraints += [onset_constraint]
 english.nucleus_constraints += [nucleus_constraint]
 english.coda_constraints += [coda_constraint]
+english.word_constraints += [no_eib]
