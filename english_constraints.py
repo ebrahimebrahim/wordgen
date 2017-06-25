@@ -15,7 +15,8 @@ def onset_constraint(onset):
   for i in range(len(onset)-1):
     c1 = onset[i]
     c2 = onset[i+1]
-    if not c1.is_obstruent: return False
+    if c2.display_IPA=='hw' : return False
+    if not c1.is_obstruent : return False
     if c1.display_IPA == 's':
       if not (c2.is_nasal or c2.is_liquid or c2.is_glide or (c2.is_obstruent and not c2.is_voiced and not c2.display_IPA==SH)): return False
     else:
