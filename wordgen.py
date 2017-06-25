@@ -1,6 +1,6 @@
 #!/usr/bin/env python2.7
 
-import csv,random,english_constraints
+import csv,random
 
 # A syllable is a tuple consisting of an onset, a nucleus, and a coda,
 # each of which is a list of Sounds.
@@ -68,16 +68,6 @@ class Language(object):
     f.close()
     self.sounds = [Sound(rows[0],row) for row in rows[1:]]
 
-english = Language()
-english.import_sound_list("english_sounds.csv")
-english.onset_length_distr = [0.4,0.8,0.95]
-#english.onset_length_distr = [0.3,0.6,0.9]
-english.coda_length_distr = [0.5,0.75,0.93,0.9851]
-#english.coda_length_distr = [0.8/3,2*0.8/3,0.8,0.95]
-english.onset_constraints += [english_constraints.onset_constraint]
-english.nucleus_constraints += [english_constraints.nucleus_constraint]
-english.coda_constraints += [english_constraints.coda_constraint]
-
 
 def gen_onset(language):
   onset = None
@@ -119,14 +109,3 @@ display_subsyllable = lambda subsyllable,style : ''.join([sound.display(style) f
 display_syllable = lambda syllable,style : ''.join([display_subsyllable(subsyllable,style) for subsyllable in syllable])
 display_word = lambda word,style : '-'.join(display_syllable(syllable,style) for syllable in word)
 
-
-def main():
-  r = random.random()
-  num_syllables = len([x for x in [0.5,0.9,0.97,0.995] if r > x]) + 1
-  word = gen_word(num_syllables,english)
-  print display_word(word,"English")
-  print display_word(word,"IPA")
-
-
-if __name__=="__main__":
-  main()

@@ -1,5 +1,7 @@
 #!/usr/bin/env python2.7
 
+from wordgen import *
+
 DJ = 'd\xca\x92'
 TH_V = '\xc3\xb0'
 NG = '\xc5\x8b'
@@ -53,3 +55,14 @@ def coda_constraint(coda):
     c2 = coda[i+1]
     if not any((c1.display_IPA in first_group and c2.display_IPA in second_group) for first_group,second_group in CODA_TABLE): return False
   return True
+
+
+english = Language()
+english.import_sound_list("english_sounds.csv")
+english.onset_length_distr = [0.4,0.8,0.95]
+#english.onset_length_distr = [0.3,0.6,0.9]
+english.coda_length_distr = [0.5,0.75,0.93,0.9851]
+#english.coda_length_distr = [0.8/3,2*0.8/3,0.8,0.95]
+english.onset_constraints += [onset_constraint]
+english.nucleus_constraints += [nucleus_constraint]
+english.coda_constraints += [coda_constraint]
