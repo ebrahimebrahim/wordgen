@@ -24,7 +24,7 @@ class Sound(object):
     self.is_consonant = not self.is_vowel
     self.is_continuant = not self.is_stop and not self.is_affricate
     self.is_obstruent = self.is_fricative or (self.is_stop and not self.is_nasal)
-    self.is_nucleus = self.is_vowel or self.is_liquid or self.is_nasal
+    self.is_nucleus = self.is_vowel or self.is_liquid or self.is_nasal or self.is_glide # are glides peup?
 
   def display(self,style):
     """ Returns string to display sound, in given style.
@@ -60,6 +60,7 @@ class Language(object):
     # these will determine the probability of each onset/coda length showing up in generation
     # for example onset_length_distr==[0.25,0.5] means a 25% chance of 0 or 1 consonant onset, and 50% chance of 2 consonant onset
     self.onset_length_distr = []
+    self.nucleus_length_distr = []
     self.coda_length_distr = []
     
   def import_sound_list(self,csv_filename):
@@ -79,8 +80,10 @@ def gen_onset(language):
 
 def gen_nucleus(language):
   nucleus = None
+  r = random.random()
+  nucleus_len = len([x for x in language.nucleus_length_distr if r > x])
   while nucleus is None or not all(constraint_holds(nucleus) for constraint_holds in language.nucleus_constraints):
-    nucleus = [random.choice([sound for sound in language.sounds if sound.is_nucleus])]
+    nucleus = [random.choice([sound for sound in language.sounds if sound.is_nucleus]) for i in range(nucleus_len)]
   return nucleus
 
 def gen_coda(language):

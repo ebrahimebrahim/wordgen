@@ -66,6 +66,7 @@ def no_eib(word):
 english = Language()
 english.import_sound_list("english_sounds.csv")
 english.onset_length_distr = [1.0/2,3.0/4,7.0/8]
+english.nucleus_length_distr = [0]
 english.coda_length_distr = [1.0/2,3.0/4,7.0/8,15.0/16]
 english.onset_constraints += [onset_constraint]
 english.nucleus_constraints += [nucleus_constraint]
