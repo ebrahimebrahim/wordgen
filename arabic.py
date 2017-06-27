@@ -4,7 +4,6 @@ from wordgen import *
 
 def nucleus_constraint(nucleus):
   if len([sound for sound in nucleus if sound.is_vowel]) != 1: return False
-  if not all(sound.is_vowel or sound.is_glide for sound in nucleus): return False
   if len(nucleus) == 3 and not nucleus[1].is_vowel: return False
   return True
 
@@ -16,16 +15,14 @@ def eibage(word):
     if not s1[2] and not s2[0]: return False
   return True
 
-def no_glides(subsyllable):
-  if any(sound.is_glide for sound in subsyllable): return False
-  return True
-
 arabic = Language()
 arabic.import_sound_list("arabic_sounds.csv")
-arabic.onset_length_distr = [0.5]
-arabic.nucleus_length_distr = [0,0.80,0.975]
-arabic.coda_length_distr = [0.45,0.90]
-arabic.nucleus_constraints += [nucleus_constraint]
-arabic.word_constraints += [eibage]
-arabic.onset_constraints += [no_glides]
-arabic.coda_constraints += [no_glides]
+arabic.length_distr['onset'] = [0.5]
+arabic.length_distr['nucleus'] = [0,0.80,0.975]
+arabic.length_distr['coda'] = [0.45,0.90]
+arabic.length_distr['word'] = [0.5,0.9,0.97,0.995]
+arabic.pool['onset'] = [sound for sound in arabic.sounds if sound.is_consonant and not sound.is_glide]
+arabic.pool['nucleus'] = [sound for sound in arabic.sounds if sound.is_vowel or sound.is_glide]
+arabic.pool['coda'] = [sound for sound in arabic.sounds if sound.is_consonant and not sound.is_glide]
+arabic.constraints['nucleus'] += [nucleus_constraint]
+arabic.constraints['word'] += [eibage]

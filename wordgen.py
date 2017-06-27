@@ -24,7 +24,6 @@ class Sound(object):
     self.is_consonant = not self.is_vowel
     self.is_continuant = not self.is_stop and not self.is_affricate
     self.is_obstruent = self.is_fricative or (self.is_stop and not self.is_nasal)
-    self.is_nucleus = self.is_vowel or self.is_liquid or self.is_nasal or self.is_glide # are glides peup?
 
   def display(self,style):
     """ Returns string to display sound, in given style.
@@ -51,58 +50,51 @@ class Language(object):
   """
   def __init__(self):
     self.sounds = []
-    self.onset_constraints = [no_doubles]
-    self.nucleus_constraints = []
-    self.coda_constraints = [no_doubles]
-    self.syllable_constraints = []
-    self.word_constraints = []
+    self.constraints = { 'onset':[no_doubles],
+                         'nucleus':[],
+                         'coda':[no_doubles],
+                         'syllable':[],
+                         'word':[] }
 
     # these will determine the probability of each onset/coda length showing up in generation
     # for example onset_length_distr==[0.25,0.5] means a 25% chance of 0 or 1 consonant onset, and 50% chance of 2 consonant onset
-    self.onset_length_distr = []
-    self.nucleus_length_distr = []
-    self.coda_length_distr = []
+    self.length_distr = { 'onset':[],
+                          'nucleus':[],
+                          'coda':[],
+                          'word':[] }
+
+    self.pool = { 'onset':[],
+                  'nucleus':[],
+                  'coda':[] }
     
   def import_sound_list(self,csv_filename):
     f=open(csv_filename)
     rows = [row for row in csv.reader(f)]
     f.close()
     self.sounds = [Sound(rows[0],row) for row in rows[1:]]
+    self.pool['onset']   = [sound for sound in self.sounds if sound.is_consonant]
+    self.pool['nucleus'] = [sound for sound in self.sounds if sound.is_vowel or sound.is_liquid or sound.is_nasal]
+    self.pool['coda']    = [sound for sound in self.sounds if sound.is_consonant]
 
-
-def gen_onset(language):
-  onset = None
+def gen_subsyllable(language,subsyllable_type):
+  subsyllable = None
   r = random.random()
-  onset_len = len([x for x in language.onset_length_distr if r > x])
-  while onset is None or not all(constraint_holds(onset) for constraint_holds in language.onset_constraints):
-    onset = [random.choice([sound for sound in language.sounds if sound.is_consonant]) for i in range(onset_len)]
-  return onset
-
-def gen_nucleus(language):
-  nucleus = None
-  r = random.random()
-  nucleus_len = len([x for x in language.nucleus_length_distr if r > x])
-  while nucleus is None or not all(constraint_holds(nucleus) for constraint_holds in language.nucleus_constraints):
-    nucleus = [random.choice([sound for sound in language.sounds if sound.is_nucleus]) for i in range(nucleus_len)]
-  return nucleus
-
-def gen_coda(language):
-  coda = None
-  r = random.random()
-  coda_len = len([x for x in language.coda_length_distr if r > x])
-  while coda is None or not all(constraint_holds(coda) for constraint_holds in language.coda_constraints):
-    coda = [random.choice([sound for sound in language.sounds if sound.is_consonant]) for i in range(coda_len)]
-  return coda
+  subsyllable_len = len([x for x in language.length_distr[subsyllable_type] if r > x])
+  while subsyllable is None or not all(constraint_holds(subsyllable) for constraint_holds in language.constraints[subsyllable_type]):
+    subsyllable = [random.choice(language.pool[subsyllable_type]) for i in range(subsyllable_len)]
+  return subsyllable
 
 def gen_syllable(language):
   syllable = None
-  while syllable is None or not all(constraint_holds(syllable) for constraint_holds in language.syllable_constraints):
-    syllable = (gen_onset(language), gen_nucleus(language), gen_coda(language))
+  while syllable is None or not all(constraint_holds(syllable) for constraint_holds in language.constraints['syllable']):
+    syllable = tuple(gen_subsyllable(language,subsyllable_type) for subsyllable_type in ('onset','nucleus','coda'))
   return syllable
 
-def gen_word(num_syllables,language):
+def gen_word(language):
   word = None
-  while word is None or not all(constraint_holds(word) for constraint_holds in language.word_constraints):
+  r = random.random()
+  num_syllables = len([x for x in language.length_distr['word'] if r > x]) + 1
+  while word is None or not all(constraint_holds(word) for constraint_holds in language.constraints['word']):
     word = [gen_syllable(language) for i in range(num_syllables)]
   return word
 

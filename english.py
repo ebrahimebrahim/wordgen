@@ -26,9 +26,6 @@ def onset_constraint(onset):
   return True
   
 
-def nucleus_constraint(nucleus):
-  if not all(sound.is_vowel for sound in nucleus): return False
-  return True
 
 
 CODA_TABLE = [ (['p','f'],[TH_U,'s','t']),
@@ -65,10 +62,11 @@ def no_eib(word):
 
 english = Language()
 english.import_sound_list("english_sounds.csv")
-english.onset_length_distr = [1.0/2,3.0/4,7.0/8]
-english.nucleus_length_distr = [0]
-english.coda_length_distr = [1.0/2,3.0/4,7.0/8,15.0/16]
-english.onset_constraints += [onset_constraint]
-english.nucleus_constraints += [nucleus_constraint]
-english.coda_constraints += [coda_constraint]
-english.word_constraints += [no_eib]
+english.length_distr['onset'] = [1.0/2,3.0/4,7.0/8]
+english.length_distr['nucleus'] = [0]
+english.length_distr['coda'] = [1.0/2,3.0/4,7.0/8,15.0/16]
+english.length_distr['word'] = [0.5,0.9,0.97,0.995]
+english.constraints['onset'] += [onset_constraint]
+english.pool['nucleus'] = [sound for sound in english.sounds if sound.is_vowel]
+english.constraints['coda'] += [coda_constraint]
+english.constraints['word'] += [no_eib]
