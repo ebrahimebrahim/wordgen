@@ -1,4 +1,4 @@
-display_IPA,display_English,place_of_articulation,is_voiced,is_nasal,is_stop,is_fricative,is_affricate,is_liquid,is_glide,is_vowel,is_diphthong
+display_IPA,display_english,place_of_articulation,is_voiced,is_nasal,is_stop,is_fricative,is_affricate,is_liquid,is_glide,is_vowel,is_diphthong
 b,b,bilabial,y,n,y,n,n,n,n,n,
 d,d,alveolar,y,n,y,n,n,n,n,n,
 dʒ,j,palatal,y,n,y,y,y,n,n,n,
