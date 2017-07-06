@@ -15,6 +15,9 @@ def eibage(word):
     if not s1[2] and not s2[0]: return False
   return True
 
+def dont_start_with_haraka(syllable):
+  return syllable[1][0].is_glide or syllable[0]
+
 arabic = Language()
 arabic.import_sound_list("arabic_sounds.csv")
 arabic.length_distr['onset'] = [0.5]
@@ -25,4 +28,5 @@ arabic.pool['onset'] = [sound for sound in arabic.sounds if sound.is_consonant a
 arabic.pool['nucleus'] = [sound for sound in arabic.sounds if sound.is_vowel or sound.is_glide]
 arabic.pool['coda'] = [sound for sound in arabic.sounds if sound.is_consonant and not sound.is_glide]
 arabic.constraints['nucleus'] += [nucleus_constraint]
+arabic.constraints['syllable'] += [dont_start_with_haraka]
 arabic.constraints['word'] += [eibage]

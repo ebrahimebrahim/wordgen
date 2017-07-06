@@ -1,7 +1,7 @@
 display_IPA,display_english,display_arabic,place_of_articulation,is_voiced,is_nasal,is_stop,is_fricative,is_affricate,is_liquid,is_glide,is_vowel,is_diphthong
 ɜ,a,َ,,,,,,,,,y,n
 ɜː,aa,ا,,,,,,,,,y,n
-aj,ay,َي,,,,,,,,,y,y
+ɜj,ay,َي,,,,,,,,,y,y
 aw,aw,َو,,,,,,,,,y,y
 b,b,ب,bilabial,y,n,y,n,n,n,n,n,
 d,d,د,alveodental,y,n,y,n,n,n,n,n,
