@@ -9,9 +9,7 @@ from qlumb import *
 from sys import exit, argv
 
 from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QPushButton, QHBoxLayout, QVBoxLayout, QLabel
-from PyQt5.QtCore import Qt
-
-btn_width=50
+from PyQt5.QtCore import Qt, QSize
 
 class wgWindow(QWidget): # main Qt window for wordgen
 	def __init__(self):
@@ -40,7 +38,7 @@ class wgWindow(QWidget): # main Qt window for wordgen
 		    returns a QHBoxLayout containing the centered button """
 		new_button = QPushButton(button_text)
 		new_button.clicked.connect(button_function)
-		new_button.setMaximumWidth(btn_width)
+		new_button.setMaximumWidth(75)
 		new_button_layout = QHBoxLayout()
 		new_button_layout.addStretch(1)
 		new_button_layout.addWidget(new_button)
@@ -60,7 +58,7 @@ class wgWindow(QWidget): # main Qt window for wordgen
 		self.wordfield.setTextInteractionFlags(Qt.TextSelectableByMouse) # makes the text selectable by mouse, in case someone wanted to copy a generated word
 		self.wordfield.setText("To generate a word,\nchoose a language below:") # this is just the starting text
 	def initWindow(self): # sets up window itself on the screen
-		self.resize(self.minimumSizeHint()) # sets window to smallest possible size (given all the other widgets that were introduced)
+		self.resize(self.minimumSizeHint()+QSize(5,20)) # sets window to smallest possible size (given all the other widgets that were introduced), plus a bit more
 		self.centerWindow()
 		self.setWindowTitle("WordGen")
 		self.show()
