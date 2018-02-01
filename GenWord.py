@@ -18,7 +18,6 @@ class wgWindow(QWidget): # main Qt window for wordgen
 		super().__init__() # calls initialiser of parent function (QWidget)
 		self.initUI()
 	def initUI(self): # initialises UI of main window
-		self.setupButtons()
 		self.setupWordfield()
 		self.initLayout()
 		self.initWindow()
@@ -26,42 +25,33 @@ class wgWindow(QWidget): # main Qt window for wordgen
 		vbox = QVBoxLayout() # a vertical "box" that will arrange the layout
 		vbox.addWidget(self.wordfield) # this adds the wordfield at the top...the order in which things are added determines how they will show up
 		vbox.addStretch(1) # this is a "stretch factor," which will change in size as the window is resized. putting it below the wordfield ensures the wordfield will remain at the top always
-		vbox.addLayout(self.englishButtonLayout)
+		vbox.addLayout( self.makeButtonLayout("English",self.genEnglishWord) )
 		vbox.addStretch(1)
-		vbox.addWidget(self.arabicButton)
+		vbox.addLayout( self.makeButtonLayout("ﻉﺮﺒﻳﺓ",self.genArabicWord) )
 		vbox.addStretch(1)
-		vbox.addWidget(self.qlumbButton)
+		vbox.addLayout( self.makeButtonLayout("Qlumb",self.genQlumbWord) )
 		hbox = QHBoxLayout() # this is a horizontal box. it will contain the entire vertical box. putting it between two stretch factors ensures that the vertical box remains horizontally centered
 		hbox.addStretch(1)
 		hbox.addLayout(vbox)
 		hbox.addStretch(1)
 		self.setLayout(hbox) # the hbox contains everything that was added in this function, and the layout is then set to it
-	def setupButtons(self): # sets up all the buttons, for generating words of chosen languages
-		self.setupEnglishButton()
-		self.setupArabicButton()
-		self.setupQlumbButton()
-	def setupEnglishButton(self): # creates the english button and links it to the function that gens an english word
-		self.englishButton = QPushButton("English") # the argument is the button's display text 
-		self.englishButton.clicked.connect(self.genEnglishWord) # the argument is the function called when the button is clicked
-		self.englishButton.setMaximumWidth(btn_width)
-		self.englishButtonLayout=QHBoxLayout()
-		self.englishButtonLayout.addStretch(1)
-		self.englishButtonLayout.addWidget(self.englishButton)
-		self.englishButtonLayout.addStretch(1)
+	def makeButtonLayout(self, button_text, button_function): # sets up a button labeled by button_text with button_function as the function called when it's clicked
+		""" sets up a button labeled by button_text with button_function as the function called when it's clicked
+		    returns a QHBoxLayout containing the centered button """
+		new_button = QPushButton(button_text)
+		new_button.clicked.connect(button_function)
+		new_button.setMaximumWidth(btn_width)
+		new_button_layout = QHBoxLayout()
+		new_button_layout.addStretch(1)
+		new_button_layout.addWidget(new_button)
+		new_button_layout.addStretch(1)
+		return new_button_layout
 	def genEnglishWord(self): # generates an english word, updating the wordfield to display the word in english and IPA displays
 		word = gen_word(english)
 		self.wordfield.setText(display_word(word,"english")+"\n"+display_word(word,"IPA"))
-	def setupArabicButton(self): # creates the arabi button and links it to the function that gens an arabi word
-		self.arabicButton = QPushButton("عربية") # the argument is the button's display text 
-		self.arabicButton.clicked.connect(self.genArabicWord) # the argument is the function called when the button is clicked
-		self.arabicButton.setMaximumWidth(btn_width)
 	def genArabicWord(self): # generates an arabi word, updating the wordfield to display the word in arabi and IPA displays
 		word = gen_word(arabic)
 		self.wordfield.setText(display_word(word,"arabic")+"\n"+display_word(word,"IPA"))
-	def setupQlumbButton(self): # creates the qlumb button and links it to the function that gens a qlumb word
-		self.qlumbButton = QPushButton("Qlumb") # the argument is the button's display text 
-		self.qlumbButton.clicked.connect(self.genArabicWord) # the argument is the function called when the button is clicked
-		self.qlumbButton.setMaximumWidth(btn_width)
 	def genQlumbWord(self):# generates a qlumb word, updating the wordfield to display the word in qlumb and IPA displays
 		word = gen_word(qlumb)
 		self.wordfield.setText(display_word(word,"qlumb")+"\n"+display_word(word,"IPA"))
