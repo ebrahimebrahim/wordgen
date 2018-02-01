@@ -26,8 +26,7 @@ class wgWindow(QWidget): # main Qt window for wordgen
 		vbox = QVBoxLayout() # a vertical "box" that will arrange the layout
 		vbox.addWidget(self.wordfield) # this adds the wordfield at the top...the order in which things are added determines how they will show up
 		vbox.addStretch(1) # this is a "stretch factor," which will change in size as the window is resized. putting it below the wordfield ensures the wordfield will remain at the top always
-#TODO: try putting vbox.addLayout("an hbox containing a btn with stretches on left and right") instead of directly adding buttons
-		vbox.addWidget(self.englishButton)
+		vbox.addLayout(self.englishButtonLayout)
 		vbox.addStretch(1)
 		vbox.addWidget(self.arabicButton)
 		vbox.addStretch(1)
@@ -45,6 +44,10 @@ class wgWindow(QWidget): # main Qt window for wordgen
 		self.englishButton = QPushButton("English") # the argument is the button's display text 
 		self.englishButton.clicked.connect(self.genEnglishWord) # the argument is the function called when the button is clicked
 		self.englishButton.setMaximumWidth(btn_width)
+		self.englishButtonLayout=QHBoxLayout()
+		self.englishButtonLayout.addStretch(1)
+		self.englishButtonLayout.addWidget(self.englishButton)
+		self.englishButtonLayout.addStretch(1)
 	def genEnglishWord(self): # generates an english word, updating the wordfield to display the word in english and IPA displays
 		word = gen_word(english)
 		self.wordfield.setText(display_word(word,"english")+"\n"+display_word(word,"IPA"))
